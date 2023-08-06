@@ -26,10 +26,10 @@
 
 Health Chart:
 
-3 - Full Health
-2 - Wounded - Player must consume 1 medicine token or rest at camp for one day to recover. 
-1 - Severely Wounded - Player is unable to go out on missions. Player must consume 2 medicine tokens and stay at camp for one day to recover. 
-0 - Dead - Player is out.
+3 health points: Full Health
+2 health points: Wounded - Player must consume 1 medicine token or rest at camp for one day to recover. 
+1 health point: Severely Wounded - Player is unable to go out on missions. Player must consume 2 medicine tokens and stay at camp for one day to recover. 
+0 health points: Dead - Player is out.
 
 ## Camp
 At the start of the game the camp begins with:
