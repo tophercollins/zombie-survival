@@ -135,7 +135,7 @@ class Player(GameEntity):
 
 # Camp
 
-camp = Camp('Base Camp',10,2,0)
+camp = Camp('Base Camp',8,4,0)
 
 # Players Lists
 
@@ -151,17 +151,17 @@ players = []
 
 # Locations
 
-abandoned_farm = Location('Abandoned Farm',6,0,2)
+abandoned_farm = Location('Abandoned Farm',6,0,3)
 corner_shop = Location('Corner Shop',5,0,1)
 hospital = Location('Hospital',3,5,2)
-military_base = Location('Military Base',1,1,7)
+military_base = Location('Military Base',1,1,8)
 pharmacy = Location('Pharmacy',2,5,0)
-police_station = Location('Police Station',2,2,6)
-prison = Location('Prison',2,2,5)
-research_lab = Location('Research Lab',1,4,1)
-school = Location('School',3,1,2)
-shopping_mall = Location('Shopping Mall',2,2,1)
-supermarket = Location('Supermarket',8,1,0)
+police_station = Location('Police Station',2,2,7)
+prison = Location('Prison',2,2,6)
+research_lab = Location('Research Lab',1,5,2)
+school = Location('School',3,2,2)
+shopping_mall = Location('Shopping Mall',2,2,2)
+supermarket = Location('Supermarket',6,1,1)
 warehouse = Location('Warehouse',3,2,3)
 
 # List
@@ -352,9 +352,9 @@ def player_can_get(player,location,half=False):
     
     player_current = player.food + player.medicine + player.weapons
     
-    # Player can have a maximum of 8 resources at a time
+    # Player can have a maximum of 7 resources at a time
     
-    player_free_slots = 8 - player_current
+    player_free_slots = 7 - player_current
     
     # Current location resources total
     
@@ -386,11 +386,64 @@ def location_empty(location):
         location.empty = True
 
 
+# ## Human Gameplay
+# 
+# ### Human collects resources
+
+# In[13]:
+
+
+# Human is reminded of location, camp and personal resources to decide what to take.
+
+def human_collects(camp, location, player, half=False):
+    
+    # Set counters for the selections
+    
+    food_track = 0
+    medicine_track = 0
+    weapons_track = 0
+                     
+    print(camp)
+    print(location)
+    print(player)
+    if half == True:
+        print(f'You can collect {player_can_get(player,location,half=True)} resources.')
+    else:
+        print(f'You can collect {player_can_get(player,location)} resources.')
+    
+    if location.food != 0:
+        food_track = int(input('How many food?'))
+        player.food += food_track
+        location.food -= food_track
+    
+    if location.medicine != 0:
+        medicine_track = int(input('How many medicine?'))
+        player.medicine += medicine_track
+        location.medicine -= medicine_track
+        
+    if location.weapons != 0:
+        weapons_track = int(input('How many weapons?'))
+        player.weapons += weapons_track
+        location.weapons -= weapons_track    
+            
+    # Report what player took
+    
+    message = f'{player.name} took:'
+    if food_track > 0:
+        message += f'\n  {food_track} food'
+    if medicine_track > 0:
+        message += f'\n  {medicine_track} medicine'
+    if weapons_track > 0:
+        message += f'\n  {weapons_track} weapons'
+    
+    print(message)
+
+
 # ## Computer Decision Logic
 # 
 # ### Decide Best Resource to collect
 
-# In[13]:
+# In[14]:
 
 
 # Check lowest resources at camp then pick from location accordingly
@@ -423,13 +476,13 @@ def best_resource(camp, location):
 
 # ### Computer collects resources
 
-# In[14]:
+# In[15]:
 
 
 # Computer takes input of location, camp and personal resources to decide what to take.
 
-def computer_collects(camp, location, player, half=False):           
-        
+def computer_collects(camp, location, player, half=False):  
+
     # Set counters for the selections
     
     food_track = 0
@@ -470,7 +523,7 @@ def computer_collects(camp, location, player, half=False):
 
 # ## Mission
 
-# In[15]:
+# In[16]:
 
 
 def mission(players,location,camp):
@@ -509,7 +562,7 @@ def mission(players,location,camp):
             
             if player.computer == False:
                 # Human collects half resources
-                pass
+                human_collects(camp, location, player, half=True)
             else:
                 # Computer collects half resources
                 print(f'{player.name} receives an injury and collects only half resources.')
@@ -521,7 +574,14 @@ def mission(players,location,camp):
         for player in players:
             if player.computer == False:
                 # Human chooses injury or half resources
-                pass
+                injury_or_half = input('Do you want to take the injury or half resources? Type injury or half')
+                if injury_or_half == 'injury':
+                    print(f'{player.name} chooses to take the injury and collects full resources.')
+                    injury(player, 1)
+                    human_collects(camp, location, player)
+                elif injury_or_half =='half':
+                    print(f'{player.name} chooses to avoid an injury and collects only half resources.')
+                    human_collects(camp, location, player, half=True)
             else:
                 # Computer decides injury or half resources
                 if player.health == 3:
@@ -539,7 +599,8 @@ def mission(players,location,camp):
         for player in players:
             if player.computer == False:
                 # Human collects resources
-                pass
+                print(f'{player.name} collects full resources.')
+                human_collects(camp, location, player)
             else:
                 # Computer collects resources
                 print(f'{player.name} collects full resources.')
@@ -550,7 +611,8 @@ def mission(players,location,camp):
         for player in players:
             if player.computer == False:
                 # Human collects resources
-                pass
+                print(f'{player.name} collects full resources.')
+                human_collects(camp, location, player)
             else:
                 # Computer collects resources
                 print(f'{player.name} collects full resources.')
@@ -561,9 +623,10 @@ def mission(players,location,camp):
         for player in players:
             if player.computer == False:
                 # Human collects resources
-                
+                print(f'{player.name} collects full resources.')
+                human_collects(camp, location, player)
                 # Bonus resource
-                bonus_pick = input('Type food, medicine or weapons')
+                bonus_pick = input('What bonus would you like? Type food, medicine or weapons.')
                 bonus_resource(player, bonus_pick)
                 
             else:
@@ -575,28 +638,26 @@ def mission(players,location,camp):
                 bonus_resource(player,best_resource(camp,bonus_resources)) 
                 
     location_empty(location)
-    print('\n')
     input('Continue?')
-    print('\n')
-
-
-# In[16]:
-
-
-### Zombie Attack
 
 
 # In[17]:
 
 
-def zombie_attack(camp, players, day_tracker, double=False):    
+### Zombie Attack
+
+
+# In[18]:
+
+
+def zombie_attack(camp, players, day_tracker, extra=False):    
     
     num_players = len(players)
     
     num_of_zombies = day_tracker
     
-    if double == True:
-        num_of_zombies = num_of_zombies*2
+    if extra == True:
+        num_of_zombies = num_of_zombies + roll_a(6)
         
     print(f'{num_of_zombies} zombies attack!')
           
@@ -635,7 +696,7 @@ def zombie_attack(camp, players, day_tracker, double=False):
 
 # ## End of Day Outcomes
 
-# In[18]:
+# In[19]:
 
 
 def end_of_day(camp, players, day_tracker):
@@ -736,13 +797,13 @@ def end_of_day(camp, players, day_tracker):
     print(f'The event roll for the night is a {roll}!')
     
     if roll == 1:
-        # Double attack     
+        # Major attack     
     
-        print('\nMajor Zombie attack, double numbers!\n')
+        print('\nMajor Zombie attack, add an extra d6 number of zombies!\n')
         
-        zombie_attack(camp, players, day_tracker, double=True)
+        zombie_attack(camp, players, day_tracker, extra=True)
         
-    elif roll == 2 or 3:
+    elif roll == 2 or roll == 3:
         # Normal attack
         
         print('\nZombie attack!\n')
@@ -826,7 +887,7 @@ def end_of_day(camp, players, day_tracker):
 
 # # Game Flow
 
-# In[19]:
+# In[20]:
 
 
 def the_game():
@@ -839,8 +900,8 @@ def the_game():
                
     # Camp
     
-    camp.food = 10
-    camp.medicine = 2
+    camp.food = 8
+    camp.medicine = 4
     camp.weapons = 0
     
     # Players
@@ -905,25 +966,89 @@ def the_game():
     
         # Stage 1 - Choose Missions
         
-        print('\nSTAGE 1: CHOOSE A MISSION\n')
+        print('\nSTAGE 1: MORNING\n')
         
         location_dict = {0:[],1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[],10:[],11:[]}
         
         for player in players:
             if player.computer == False:
-                print(f'{player.name}, where do you want to go?')
-                selection = int(input('Pick a location: 0 to 11'))
-                location_dict[selection].append(player)
-                print(f'{player.name} chooses to go to {locations[selection].name}')
+                
+                # Check injury status
+                if player.health == 1:
+                    # Player is severely injured so stays at base
+                    if camp.medicine >= 2:
+                        camp.medicine -= 2
+                        player.health += 2
+                        print(f'{player.name} is severly injured so takes 2 medicine from camp and must stay at camp.')
+                    elif camp.medicine == 1 and player.medicine >= 1:
+                        camp.medicine -= 1
+                        player.medicine -= 1
+                        player.health += 2
+                        print(f'{player.name} is severly injured so takes 1 medicine from both camp and personal resources and must stay at camp.')
+                    elif player.medicine >= 2:
+                        player.medicine -= 2
+                        player.health += 2
+                        print(f'{player.name} is severly injured so takes 2 medicine from personal resources and must stay at camp.')
+                    else:
+                        print(f'{player.name} is severly injured and there is not enough medicine so remains severely injured and must stay at camp.')
+                
+                elif player.health == 2 and camp.medicine == 0 and player.medicine == 0:
+                    # Player is injured and there is no medicine so stays at base
+                    print(f'{player.name} is injured and there is not enough medicine so must stay at camp but recovers.')
+                    player.health += 1
+                else:
+                               
+                
+                    print(f'{player.name}, where do you want to go?')
+                    selection = int(input('Pick a location: 0 to 11'))
+                    location_dict[selection].append(player)
+                    print(f'{player.name} chooses to go to {locations[selection].name}')
             else:
-                # For now picks a random location
-                picking_location = True
-                while picking_location:
-                    selection = random.randint(0,11)
-                    if locations[selection].empty == False:
-                        location_dict[selection].append(player)
-                        print(f'{player.name} chooses to go to {locations[selection].name}')
-                        break
+                # Check injury status
+                if player.health == 1:
+                    # Player is severely injured so stays at base
+                    if camp.medicine >= 2:
+                        camp.medicine -= 2
+                        player.health += 2
+                        print(f'{player.name} is severly injured so takes 2 medicine from camp and must stay at camp.')
+                    elif camp.medicine == 1 and player.medicine >= 1:
+                        camp.medicine -= 1
+                        player.medicine -= 1
+                        player.health += 2
+                        print(f'{player.name} is severly injured so takes 1 medicine from both camp and personal resources and must stay at camp.')
+                    elif player.medicine >= 2:
+                        player.medicine -= 2
+                        player.health += 2
+                        print(f'{player.name} is severly injured so takes 2 medicine from personal resources and must stay at camp.')
+                    else:
+                        print(f'{player.name} is severly injured and there is not enough medicine so remains severely injured and must stay at camp.')
+                
+                elif player.health == 2 and camp.medicine == 0 and player.medicine == 0:
+                    # Player is injured and there is no medicine so stays at base
+                    print(f'{player.name} is injured and there is not enough medicine so must stay at camp but recovers.')
+                    player.health += 1
+                else:
+                    # Player goes on a mission
+                    if player.health == 2 and camp.medicine >= 1:
+                        print(f'{player.name} is injured so takes 1 medicine from camp and recovers.')
+                        camp.medicine -= 1
+                        player.health += 1
+                    elif player.health == 2:
+                        print(f'{player.name} is injured so takes 1 medicine from personal resources and recovers.')
+                        player.medicine -= 1
+                        player.health += 1
+                   
+                    # Computer picks a random location to go on a mission to
+                    if locations != []:
+                        picking_location = True
+                        while picking_location:
+                            selection = random.randint(0,11)
+                            if locations[selection].empty == False:
+                                location_dict[selection].append(player)
+                                print(f'{player.name} chooses to go to {locations[selection].name}')
+                                break
+                    else:
+                        print(f'{player.name} stats at camp as there are no more locations to raid.')
         
         input('Continue?')
         
@@ -941,6 +1066,8 @@ def the_game():
         
         for player in players:
             if player.computer == False:
+                print(camp)
+                print(player)
                 print(f'{player.name}, how much of these resources do you want to give to camp?')
                 food = int(input('Food:'))
                 medicine = int(input('Medicine:'))
@@ -984,9 +1111,9 @@ def the_game():
                     camp.medicine += player.medicine
                     player.food = 0
                     player.medicine = 0
-                    if player.weapons > 4:
-                        camp.weapons += player.weapons - 4
-                        player.weapons = 4
+                    if player.weapons > 3:
+                        camp.weapons += player.weapons - 3
+                        player.weapons = 3
                 elif player.personality == 'tactical':
                     if camp.food > len(players)*2:
                         camp.food += player.food
@@ -1020,8 +1147,14 @@ def the_game():
        
 
 
-# In[ ]:
+# In[21]:
 
 
 the_game()
+
+
+# In[ ]:
+
+
+4
 
