@@ -20,17 +20,16 @@
  * Weapons: Used to fight against zombie attacks during the night, and aid in settling conflicts between players.
 
 ## Players
-At the start of the game the players begin with:
-* 1 weapon token
-Players can hold a maximum of 8 resources at one time.
-Player may suffer injuries/illness from missions/problems at camp.
+* At the start of the game the players begin with 1 weapon token
+* Players can hold a maximum of 8 resources at one time.
+* Player may suffer injuries/illness from missions/problems at camp.
 
 Health Chart:
 
-3. Full Health
-2. Wounded - Player must consume 1 medicine token or rest at camp for one day to recover. 
-1. Severely Wounded - Player is unable to go out on missions. Player must consume 2 medicine tokens and stay at camp for one day to recover. 
-0. Dead - Player is out.
+3 - Full Health
+2 - Wounded - Player must consume 1 medicine token or rest at camp for one day to recover. 
+1 - Severely Wounded - Player is unable to go out on missions. Player must consume 2 medicine tokens and stay at camp for one day to recover. 
+0 - Dead - Player is out.
 
 ## Camp
 At the start of the game the camp begins with:
