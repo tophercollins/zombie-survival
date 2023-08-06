@@ -115,11 +115,14 @@ class Player(GameEntity):
     
     injury_states = {-2:'dead',-1:'dead',0:'dead',1:'severely wounded',2:'wounded',3:'healthy'}
     
+    personalities = ['greedy','generous','cautious','combative','tactical']
+    
     def __init__(self, name, food=0, medicine=0, weapons=1, computer=True):
         super().__init__(name, food, medicine, weapons)
         self.computer = computer
         self.health = 3
         self.had_dinner = False
+        self.personality = random.choice(self.personalities)
 
     def __repr__(self):
         return f"{self.name} has {self.food} food, {self.medicine} medicine, and {self.weapons} weapon(s) and they are {self.injury_states[self.health]}."        
@@ -949,7 +952,50 @@ def the_game():
                 player.weapons -= weapons
                 camp.weapons += weapons
             else:
-                pass
+                if player.personality == 'cautious':
+                    if player.food > 1:
+                        camp.food += player.food - 1
+                        player.food = 1                   
+                    if player.medicine > 1:
+                        camp.medicine += player.medicine - 1
+                        player.medicine = 1                    
+                    if player.weapons > 1:
+                        camp.weapons += player.weapons - 1
+                        player.weapons = 1                       
+                elif player.personality == 'greedy':
+                    if player.food > 2:
+                        camp.food += player.food - 2
+                        player.food = 2                    
+                    if player.medicine > 2:
+                        camp.medicine += player.medicine - 2
+                        player.medicine = 2                    
+                    if player.weapons > 2:
+                        camp.weapons += player.weapons - 2
+                        player.weapons = 2                        
+                elif player.personality == 'generous':
+                    camp.food += player.food
+                    camp.medicine += player.medicine
+                    camp.weapons += player.weapons
+                    player.food = 0
+                    player.medicine = 0
+                    player.weapons = 0
+                elif player.personality == 'combative':
+                    camp.food += player.food
+                    camp.medicine += player.medicine
+                    player.food = 0
+                    player.medicine = 0
+                    if player.weapons > 4:
+                        camp.weapons += player.weapons - 4
+                        player.weapons = 4
+                elif player.personality == 'tactical':
+                    if camp.food > len(players)*2:
+                        camp.food += player.food
+                        player.food = 0
+                    if camp.medicine > len(players)*2:
+                        camp.medicine += player.medicine
+                        player.medicine = 0
+                    camp.weapons += player.weapons
+                    player.weapons = 0                     
         
         input('Continue?')             
         
@@ -974,14 +1020,8 @@ def the_game():
        
 
 
-# In[20]:
-
-
-the_game()
-
-
 # In[ ]:
 
 
-
+the_game()
 
