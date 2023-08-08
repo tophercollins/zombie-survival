@@ -67,9 +67,9 @@ Zombie Attacks - If zombies attack player must fight back with weapons, a weapon
 If there are insufficent weapons to fight back then a random player dies.
 
 Daily Event Roll Chart:
-1. Major Zombie Attack - Zombies double to the number of the current day attack.
-2. Zombie Attack - Zombies equal to the number of the current day attack.
-3. Zombie Attack - Zombies equal to the number of the current day attack.
+1. Major Zombie Attack - 3xd6 Zombies attack.
+2. Zombie Attack - 2xd6 Zombies attack.
+3. Lesser Zombie Attack - 1xd6 Zombies attack.
 4. Camp Illness - Each player must use 1 medicine token or lose 1 health point.
 5. Quiet Night - No event.
 6. Quiet Night - No event.
